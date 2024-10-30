@@ -4,34 +4,42 @@ export default class KvsRepository {
 
     static async getKvsFeatures(){
         const featuresList = (await KvsService.getKvsFeatures()).data.result.data
-        const features = featuresList.map((feature) => {
-            const localizations = feature.value.localizations
-            return {
-                name: feature.name, 
-                team: feature.team, 
-                createdAt: feature.createdAt,
-                description: feature.description, 
-                localizations: Object.keys(localizations)
-                .sort((a, b) => sortAlphabetWithDefault(a, b))
-                .map(localization => ({
-                    name: localization,
-                    platforms: Object.keys(localizations[localization].platforms)
-                    .sort((a, b) => a.localeCompare(b))
-                    .map(platform => ({
-                        name: platform,
-                        versions: Object.keys(localizations[localization].platforms[platform].versions)
-                        .sort((a, b) => sortVersions(a, b))
-                        .map(version => ({
-                            name: version,
-                            value: localizations[localization].platforms[platform].versions[version]
-                        }))
-                    }))
-                }))
-            }
-        })
-        return features.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+        const remoteValues = (await KvsService.getKvsRemoteValues()).data.result.data
+        return {
+            features: mapToModel(featuresList),
+            remoteValues: mapToModel(remoteValues)
+        }
     }
 
+}
+
+function mapToModel(list) {
+    const newList = list.map((item) => {
+        const localizations = item.value.localizations
+        return {
+            name: item.name, 
+            team: item.team, 
+            createdAt: item.createdAt,
+            description: item.description, 
+            localizations: Object.keys(localizations)
+            .sort((a, b) => sortAlphabetWithDefault(a, b))
+            .map(localization => ({
+                name: localization,
+                platforms: Object.keys(localizations[localization].platforms)
+                .sort((a, b) => a.localeCompare(b))
+                .map(platform => ({
+                    name: platform,
+                    versions: Object.keys(localizations[localization].platforms[platform].versions)
+                    .sort((a, b) => sortVersions(a, b))
+                    .map(version => ({
+                        name: version,
+                        value: localizations[localization].platforms[platform].versions[version]
+                    }))
+                }))
+            }))
+        }
+    })
+    return newList.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
 }
 
 function sortVersions(a, b) {
@@ -40,10 +48,10 @@ function sortVersions(a, b) {
     let left = getArrayFromVersion(a);
     let right = getArrayFromVersion(b);
     if (isLessVersion(left, right)) {
-        return 1;
+        return -1;
     }
     if (!isLessVersion(left, right)) {
-        return -1;
+        return 1;
     }
     return 0;
 }

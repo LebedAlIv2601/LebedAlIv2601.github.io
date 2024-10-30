@@ -3,62 +3,65 @@ import {useState} from "react";
 import KvsRepository from "./data/KvsRepository";
 import { useFetching } from "./utils/useFetching";
 import LoadingIndicator from "./ui/LoadingIndicator";
-import FeaturesContent from "./ui/FeaturesContent";
 import { Button, FormSelect } from "react-bootstrap";
-import TeamSelect from "./ui/TeamSelect";
-import PlatformSelect from "./ui/PlatformSelect";
+import TeamSelect from "./ui/selects/TeamSelect";
+import PlatformSelect from "./ui/selects/PlatformSelect";
+import ValueTypeSelect from "./ui/selects/ValuesSelect";
+import KvsValuesContent from "./ui/KvsValuesContent";
+import filterKvsValues from "./utils/filterKvsValues";
+import './App.css';
+import ErrorPlaceholder from "./ui/ErrorPlaceholder";
 
 function App() {
   const [features, setFeatures] = useState([])
+  const [remoteValues, setRemoteValues] = useState([])
   const [selectedTeam, setTeam] = useState('all')
   const [selectedPlatform, setPlatform] = useState('all')
+  const [selectedValueType, setValueType] = useState('features')
 
-  const [getFeatures, isFeaturesLoading, isFeaturesError] = useFetching(async () => {
-    const featuresList = await KvsRepository.getKvsFeatures()
-    console.log(featuresList)
-    setFeatures(featuresList)
+  const [getKvsValues, isKvsValuesLoading, isKvsValuesError] = useFetching(async () => {
+    const kvsValuesModel = await KvsRepository.getKvsFeatures()
+    console.log(kvsValuesModel)
+    setFeatures(kvsValuesModel.features)
+    setRemoteValues(kvsValuesModel.remoteValues)
   })
 
   useEffect(() => {
-    getFeatures()
+    getKvsValues()
   }, [])
 
-  const filteredFeatures = selectedTeam == 'all' ? features : features.filter((item) => item.team === selectedTeam);
-  const shownFeatures = filteredFeatures.map(feature => ({
-    ...feature,
-    localizations: feature.localizations.map(localization => ({
-        ...localization,
-        platforms: localization.platforms.filter(platform => {
-            if (selectedPlatform == 'all') {
-                return true;
-            } else if (selectedPlatform == 'android+huawei') {
-                return platform.name == 'android' || platform.name == 'huawei';
-            } else {
-                return platform.name == selectedPlatform;
-            }
-        })
-    }))
-  }));
+  const shownFeatures = filterKvsValues(features, selectedTeam, selectedPlatform);
+  const shownRemoteValues = filterKvsValues(remoteValues, selectedTeam, selectedPlatform);
+
+  const shownValues = selectedValueType === 'features' ? shownFeatures : shownRemoteValues;
 
   return (
     <div className="App" style={{padding: '0.4em 0.8em'}}>
-      <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
-        <div style={{display: 'flex'}}>
-          <div style={{paddingRight: '0.5em'}}>
+      <div className="topcontainer">
+        <div className="controls">
+          <div>
             <h5 style={{paddingRight: '0.5em'}}>Team</h5> 
             <TeamSelect selectedTeam={selectedTeam} onSelect={setTeam}></TeamSelect>
           </div>
-          <div style={{paddingRight: '0.5em'}}>
+          <div>
             <h5 style={{paddingRight: '0.5em'}}>Platform</h5> 
             <PlatformSelect selectedPlatform={selectedPlatform} onSelect={setPlatform}></PlatformSelect>
           </div>
+          <div>
+            <h5 style={{paddingRight: '0.5em'}}>Value Type</h5> 
+            <ValueTypeSelect selectedValueType={selectedValueType} onSelect={setValueType}></ValueTypeSelect>
+          </div>
         </div>
-        <Button onClick={getFeatures}>Обновить</Button>
+        <Button onClick={getKvsValues}>Обновить</Button>
       </div>
       <div style={{paddingTop: '1em'}}>
-        {isFeaturesLoading 
+        {isKvsValuesLoading 
           ? <LoadingIndicator/> 
-          : <FeaturesContent features={shownFeatures} selectedTeam={selectedTeam}/>}
+          : isKvsValuesError 
+          ? <ErrorPlaceholder/>
+          : shownValues.length == 0
+          ? <h5 style={{paddingRight: '0.5em'}}>Ничего нет по таким параметрам</h5> 
+          : <KvsValuesContent values={shownValues} selectedTeam={selectedTeam}/>}
       </div>
     </div>
   );
