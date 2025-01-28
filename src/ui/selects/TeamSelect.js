@@ -9,6 +9,7 @@ const TeamSelect = ({selectedTeam, onSelect}) => {
                 <option value='blue'>Blue</option>
                 <option value='green'>Green</option>
                 <option value='orange'>Orange</option>
+                <option value='yellow'>Yellow</option>
                 <option value='common'>Common</option>
             </FormSelect>
         </div>
