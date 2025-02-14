@@ -19,6 +19,12 @@ function mapToModel(list) {
         return {
             name: item.name, 
             team: item.team, 
+            releaseVersion: item.version,
+            hasBeta: Object.keys(localizations).find(localization => {
+                return Object.keys(localizations[localization].platforms).find(platform => {
+                    return localizations[localization].platforms[platform]?.beta !== undefined
+                }) !== undefined
+            }) !== undefined,
             createdAt: item.createdAt,
             description: item.description, 
             localizations: Object.keys(localizations)
@@ -27,15 +33,26 @@ function mapToModel(list) {
                 name: localization,
                 platforms: Object.keys(localizations[localization].platforms)
                 .sort((a, b) => a.localeCompare(b))
-                .map(platform => ({
-                    name: platform,
-                    versions: Object.keys(localizations[localization].platforms[platform].versions)
-                    .sort((a, b) => sortVersions(a, b))
-                    .map(version => ({
-                        name: version,
-                        value: localizations[localization].platforms[platform].versions[version]
-                    }))
-                }))
+                .map(platform => {
+                    const versionsList = Object.keys(localizations[localization].platforms[platform].versions)
+                        .sort((a, b) => sortVersions(a, b))
+                        .map(version => ({
+                            name: version,
+                            value: localizations[localization].platforms[platform].versions[version]
+                        }))
+                    if(localizations[localization].platforms[platform]?.beta !== undefined) {
+                        versionsList.push(
+                            {
+                                name: "beta",
+                                value: localizations[localization].platforms[platform]?.beta
+                            }
+                        )
+                    }
+                    return {
+                        name: platform,
+                        versions: versionsList
+                    }
+                })
             }))
         }
     })
