@@ -10,6 +10,8 @@ const TeamSelect = ({selectedTeam, onSelect}) => {
                 <option value='green'>Green</option>
                 <option value='orange'>Orange</option>
                 <option value='yellow'>Yellow</option>
+                <option value='supplies'>Supplies</option>
+                <option value='ads'>Ads</option>
                 <option value='common'>Common</option>
             </FormSelect>
         </div>

@@ -12,6 +12,10 @@ const TeamBadge = ({ text }) => {
                 return '#0d6efd';
             case 'yellow':
                 return '#FDE910';
+            case 'supplies':
+                return '#cc338b';
+            case 'ads':
+                return '#d10404';
             default:
                 return '#6c757d';
         }
