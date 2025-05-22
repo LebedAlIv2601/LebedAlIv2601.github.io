@@ -1,8 +1,9 @@
 import Accordion from 'react-bootstrap/Accordion';
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import { Table } from 'react-bootstrap';
 import TeamBadge from './TeamBadge';
 import KvsBadge from './KvsBadge';
+import { FaRegCopy } from 'react-icons/fa';
 
 const KvsValueItem = ({value, itemKey}) => {
     const getLocalizationSize = (localization) => {
@@ -15,12 +16,92 @@ const KvsValueItem = ({value, itemKey}) => {
         return span
     }
 
+    const [copied, setCopied] = useState(false);
+    const [showSnackbar, setShowSnackbar] = useState(false);
+    const buttonRef = useRef(null);
+
+    const handleCopy = () => {
+        navigator.clipboard.writeText(value.name).then(() => {
+        setCopied(true);
+        setShowSnackbar(true);
+        setTimeout(() => {
+            setCopied(false);
+            setShowSnackbar(false);
+        }, 1000);
+        });
+    };
+
     return (
         <Accordion.Item eventKey={itemKey}>
             <Accordion.Header>
                 <TeamBadge style={{flexShrink:'0' }} text={value.team}/>
-                <h5 style={{marginBlock:'0.3em', marginLeft:'0.5em', marginRight:'0.5em', overflow:'hidden', textOverflow:'ellipsis', flexGrow:'1'}}> {`${value.name}`} </h5>
+
+                <h5 style={{
+                    marginBlock: '0.3em',
+                    marginLeft: '0.5em',
+                    marginRight: '0.5em',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    flexGrow: '1',
+                    whiteSpace: 'nowrap',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.4em',
+                }}>
+                    <span style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>{value.name}</span>
+
+                    {/* Кнопка с вложенным снеком */}
+                    <div style={{ position: 'relative' }}>
+                    <button
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            handleCopy();
+                          }}
+                        title="Скопировать имя"
+                        style={{
+                        minWidth: '1.8em',
+                        height: '1.8em',
+                        borderRadius: '50%',
+                        border: 'none',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        backgroundColor: copied ? '#a0e3a0' : '#e0e0e0',
+                        transition: 'background-color 0.3s ease',
+                        flexShrink: 0,
+                        position: 'relative',
+                        zIndex: 1,
+                        }}
+                    >
+                        <FaRegCopy size={14} color={copied ? '#2e7d32' : '#555'} />
+                    </button>
+
+                    {/* Снек выезжает вбок */}
+                    {showSnackbar && (
+                        <div style={{
+                        position: 'absolute',
+                        left: '120%',
+                        top: '50%',
+                        transform: 'translateY(-50%)',
+                        backgroundColor: '#333',
+                        color: '#fff',
+                        padding: '0.4em 0.8em',
+                        borderRadius: '0.4em',
+                        fontSize: '0.75em',
+                        whiteSpace: 'nowrap',
+                        boxShadow: '0px 2px 6px rgba(0,0,0,0.2)',
+                        animation: 'slideInOutSide 1s ease-in-out',
+                        zIndex: 2,
+                        }}>
+                        Имя тоггла скопировано
+                        </div>
+                    )}
+                    </div>
+                </h5>
+
                 {value.hasBeta ? <KvsBadge style={{flexShrink:'0'}} text = {`${'BETA'}`} color = {"#BC7EFF"}/> : <div/>}
+                
                 <div style={{width:'1em'}}/>
             </Accordion.Header>
             <Accordion.Body>

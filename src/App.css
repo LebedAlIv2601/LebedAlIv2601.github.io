@@ -21,3 +21,10 @@
         gap: 0.5em;
     }
 }
+
+@keyframes slideInOutSide {
+    0% { opacity: 0; transform: translateY(-50%) translateX(-10px); }
+    10% { opacity: 1; transform: translateY(-50%) translateX(0); }
+    90% { opacity: 1; transform: translateY(-50%) translateX(0); }
+    100% { opacity: 0; transform: translateY(-50%) translateX(-10px); }
+  }  
