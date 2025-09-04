@@ -8,6 +8,15 @@
 .controls {
     display: flex;
     gap: 0.5em;
+    flex: 1;
+}
+
+/* Это ключевое изменение */
+.search-container {
+    display: flex;
+    flex-direction: column;
+    /* Позволим этому элементу растягиваться */
+    flex-grow: 1; 
 }
 
 @media (max-width: 600px) {

@@ -1,21 +1,19 @@
 import React from 'react';
 import { FormSelect } from 'react-bootstrap';
 
-const TeamSelect = ({selectedTeam, onSelect}) => {
-    return (
-        <div>
-            <FormSelect value={selectedTeam} onChange={(e) => onSelect(e.target.value)}>
-                <option value='all'>All</option>
-                <option value='blue'>Blue</option>
-                <option value='green'>Green</option>
-                <option value='orange'>Orange</option>
-                <option value='yellow'>Yellow</option>
-                <option value='supplies'>Supplies</option>
-                <option value='ads'>Ads</option>
-                <option value='common'>Common</option>
-            </FormSelect>
-        </div>
-    );
+const TeamSelect = ({ selectedTeam, onSelect, teamsList }) => {
+  return (
+    <div>
+      <FormSelect value={selectedTeam} onChange={(e) => onSelect(e.target.value)}>
+        <option value="all">All</option>
+        {teamsList.map((team) => (
+          <option key={team.name} value={team.name}>
+            {team.name}
+          </option>
+        ))}
+      </FormSelect>
+    </div>
+  );
 };
 
 export default TeamSelect;

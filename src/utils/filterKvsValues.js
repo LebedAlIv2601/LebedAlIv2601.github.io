@@ -1,4 +1,4 @@
-function filterKvsValues(valuesList, selectedTeam, selectedPlatform, selectedHasBetaMode) {
+function filterKvsValues(valuesList, selectedTeam, selectedPlatform, selectedHasBetaMode, query) {
     const filteredList = valuesList.filter((item) => {
         let teamCondition
         if(selectedTeam != 'all') {
@@ -14,7 +14,15 @@ function filterKvsValues(valuesList, selectedTeam, selectedPlatform, selectedHas
         } else {
             hasBetaCondition = true
         }
-        return teamCondition && hasBetaCondition
+
+        let queryCondition
+        if (!query || query.trim() === '') {
+            queryCondition = true; // пустой запрос — всё подходит
+        } else {
+            const lowerQuery = query.toLowerCase();
+            queryCondition = item.name.toLowerCase().includes(lowerQuery)
+        }
+        return teamCondition && hasBetaCondition && queryCondition
     })
     const shownItems = filteredList.map(item => ({
         ...item,

@@ -5,7 +5,7 @@ import TeamBadge from './TeamBadge';
 import KvsBadge from './KvsBadge';
 import { FaRegCopy } from 'react-icons/fa';
 
-const KvsValueItem = ({value, itemKey}) => {
+const KvsValueItem = ({value, itemKey, teamsList}) => {
     const getLocalizationSize = (localization) => {
         let span = 0;
         for (let platform of localization.platforms) {
@@ -15,10 +15,12 @@ const KvsValueItem = ({value, itemKey}) => {
         }
         return span
     }
+    console.log(teamsList)
 
     const [copied, setCopied] = useState(false);
     const [showSnackbar, setShowSnackbar] = useState(false);
     const buttonRef = useRef(null);
+    const team = teamsList.find((t) => t.name === value.team);
 
     const handleCopy = () => {
         navigator.clipboard.writeText(value.name).then(() => {
@@ -34,7 +36,7 @@ const KvsValueItem = ({value, itemKey}) => {
     return (
         <Accordion.Item eventKey={itemKey}>
             <Accordion.Header>
-                <TeamBadge style={{flexShrink:'0' }} text={value.team}/>
+                <TeamBadge style={{flexShrink:'0' }} text={value.team} bgColor={team.bg} textColor={team.text}/>
 
                 <h5 style={{
                     marginBlock: '0.3em',

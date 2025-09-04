@@ -1,12 +1,6 @@
 import React from 'react';
 
-const KvsBadge = ({ text, color = 'blue'}) => {
-    let textColor
-    if (color == '#FDE910') {
-      textColor = 'black'
-    } else {
-      textColor = 'white'
-    }
+const KvsBadge = ({ text, bgColor, textColor}) => {
     const styles = {
         display: 'inline-block',
         padding: '0.4em 0.8em',
@@ -14,7 +8,7 @@ const KvsBadge = ({ text, color = 'blue'}) => {
         color: textColor,
         fontWeight: 'bold',
         textAlign: 'center',
-        backgroundColor: color,
+        backgroundColor: bgColor,
         fontSize: '0.8em',
       };
   return (
