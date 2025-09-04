@@ -18,7 +18,7 @@ const PALETTE = [
   { bg: '#20c997', text: 'white' },   // бирюзовый
   { bg: '#6610f2', text: 'white' },   // насыщенный фиолетовый
   { bg: '#ffc107', text: 'black' },   // янтарный
-  { bg: '#6f42c1', text: 'white' },   // пурпурный
+  { bg: '#ff00ff', text: 'white' },   // яркий магентовый
   { bg: '#0dcaf0', text: 'black' },   // голубой
   { bg: '#343a40', text: 'white' },   // тёмно-серый
   { bg: '#e83e8c', text: 'white' },   // розовый
