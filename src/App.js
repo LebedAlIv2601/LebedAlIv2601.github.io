@@ -75,7 +75,7 @@ function App() {
           ? <ErrorPlaceholder/>
           : shownValues.length == 0
           ? <h5 style={{paddingRight: '0.5em'}}>Ничего нет по таким параметрам</h5> 
-          : <KvsValuesContent values={shownValues} selectedTeam={selectedTeam} teamsList={teams}/>}
+          : <KvsValuesContent values={shownValues} selectedTeam={selectedTeam} teamsList={teams} valueType={selectedValueType}/>}
       </div>
     </div>
   );

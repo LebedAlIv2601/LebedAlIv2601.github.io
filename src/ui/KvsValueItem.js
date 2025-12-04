@@ -3,9 +3,9 @@ import React, { useRef, useState } from 'react';
 import { Table } from 'react-bootstrap';
 import TeamBadge from './TeamBadge';
 import KvsBadge from './KvsBadge';
-import { FaRegCopy } from 'react-icons/fa';
+import { FaRegCopy, FaPencilAlt } from 'react-icons/fa';
 
-const KvsValueItem = ({value, itemKey, teamsList}) => {
+const KvsValueItem = ({value, itemKey, teamsList, valueType}) => {
     const getLocalizationSize = (localization) => {
         let span = 0;
         for (let platform of localization.platforms) {
@@ -33,6 +33,22 @@ const KvsValueItem = ({value, itemKey, teamsList}) => {
         });
     };
 
+    const handleEdit = () => {
+        const baseUrl = 'https://partner-mobile-kvs-admin.wb.ru/scope/';
+        let url;
+        
+        if (valueType === 'features') {
+            url = `${baseUrl}features/attribute/${value.name}Attribute`;
+        } else {
+            url = `${baseUrl}storage/attribute/${value.name}`;
+        }
+        
+        const newTab = window.open(url, '_blank');
+        if (newTab) {
+            newTab.focus();
+        }
+    };
+
     return (
         <Accordion.Item eventKey={itemKey}>
             <Accordion.Header>
@@ -52,8 +68,8 @@ const KvsValueItem = ({value, itemKey, teamsList}) => {
                 }}>
                     <span style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>{value.name}</span>
 
-                    {/* Кнопка с вложенным снеком */}
-                    <div style={{ position: 'relative' }}>
+                    {/* Кнопки */}
+                    <div style={{ position: 'relative', display: 'flex', gap: '0.4em' }}>
                     <button
                         onClick={(e) => {
                             e.stopPropagation();
@@ -77,6 +93,31 @@ const KvsValueItem = ({value, itemKey, teamsList}) => {
                         }}
                     >
                         <FaRegCopy size={14} color={copied ? '#2e7d32' : '#555'} />
+                    </button>
+
+                    <button
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            handleEdit();
+                          }}
+                        title="Редактировать"
+                        style={{
+                        minWidth: '1.8em',
+                        height: '1.8em',
+                        borderRadius: '50%',
+                        border: 'none',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        backgroundColor: '#e0e0e0',
+                        transition: 'background-color 0.3s ease',
+                        flexShrink: 0,
+                        position: 'relative',
+                        zIndex: 1,
+                        }}
+                    >
+                        <FaPencilAlt size={14} color='#555' />
                     </button>
 
                     {/* Снек выезжает вбок */}
